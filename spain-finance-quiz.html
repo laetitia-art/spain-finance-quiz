@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spain Financial Readiness Quiz — Coming to Spain</title>
+  <meta name="description" content="Take this free 6-question quiz to find out if moving to Spain is financially right for you — your investments, retirement, and assets." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:       #C8102E;
+      --red-dark:  #a00d24;
+      --gold:      #E8A020;
+      --navy:      #1C1C3A;
+      --navy-mid:  #2D2D4E;
+      --bg:        #FAFAF7;
+      --cream:     #FFF8F0;
+      --warm-grey: #F3EDE4;
+      --text:      #2D2D2D;
+      --muted:     #6B7280;
+      --border:    #E5DDD0;
+      --white:     #FFFFFF;
+      --green:     #16a34a;
+      --amber:     #d97706;
+      --radius:    12px;
+      --shadow:    0 4px 24px rgba(0,0,0,0.08);
+      --shadow-lg: 0 12px 48px rgba(0,0,0,0.14);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      font-size: 16px;
+    }
+    h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.2; }
+
+    /* ── Nav ── */
+    .nav {
+      background: rgba(250,250,247,0.97);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav__logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; color: var(--navy); }
+    .nav__logo span { color: var(--red); }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(165deg, var(--navy) 0%, var(--navy-mid) 60%, #3D2B1A 100%);
+      color: var(--white);
+      padding: 60px 24px 70px;
+      text-align: center;
+    }
+    .hero__badge {
+      display: inline-block;
+      background: rgba(232,160,32,0.15);
+      border: 1px solid rgba(232,160,32,0.4);
+      color: var(--gold);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(1.9rem, 4vw, 2.8rem);
+      font-weight: 800;
+      max-width: 640px;
+      margin: 0 auto 16px;
+    }
+    .hero h1 em { font-style: normal; color: var(--gold); }
+    .hero p {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.8);
+      max-width: 520px;
+      margin: 0 auto 32px;
+      line-height: 1.7;
+    }
+    .hero__meta {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.6);
+    }
+    .hero__meta span { display: flex; align-items: center; gap: 6px; }
+
+    /* ── Quiz wrapper ── */
+    .quiz-wrapper {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* ── Progress bar ── */
+    .progress {
+      margin-bottom: 36px;
+    }
+    .progress__label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    .progress__bar {
+      height: 6px;
+      background: var(--border);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .progress__fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--red), var(--gold));
+      border-radius: 100px;
+      transition: width 0.4s ease;
+    }
+
+    /* ── Question card ── */
+    .question { display: none; }
+    .question.active { display: block; }
+
+    .question__tag {
+      display: inline-block;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      color: var(--red);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+    .question__number {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .question__text {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 28px;
+      line-height: 1.35;
+    }
+
+    /* ── Options ── */
+    .options { display: flex; flex-direction: column; gap: 12px; }
+
+    .option {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 18px 20px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      background: var(--white);
+      transition: border-color 0.2s, background 0.2s, transform 0.15s;
+      text-align: left;
+      width: 100%;
+      font-family: 'Inter', sans-serif;
+    }
+    .option:hover { border-color: var(--navy); background: #f8f8fc; transform: translateY(-1px); }
+    .option.selected { border-color: var(--navy); background: #f0f0f8; }
+    .option.selected.green  { border-color: var(--green);  background: #f0fdf4; }
+    .option.selected.amber  { border-color: var(--amber);  background: #fffbeb; }
+    .option.selected.red    { border-color: var(--red);    background: #fff1f2; }
+
+    .option__dot {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      margin-top: 2px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .option.selected .option__dot { background: var(--navy); border-color: var(--navy); }
+    .option.selected.green  .option__dot { background: var(--green); border-color: var(--green); }
+    .option.selected.amber  .option__dot { background: var(--amber); border-color: var(--amber); }
+    .option.selected.red    .option__dot { background: var(--red);   border-color: var(--red); }
+
+    .option__text { font-size: 0.97rem; color: var(--text); line-height: 1.5; }
+
+    /* ── Navigation ── */
+    .quiz__nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 32px;
+      gap: 12px;
+    }
+    .btn {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 14px 32px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn--primary { background: var(--red); color: var(--white); }
+    .btn--primary:hover { background: var(--red-dark); transform: translateY(-1px); }
+    .btn--primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .btn--ghost { background: transparent; color: var(--muted); padding: 14px 20px; }
+    .btn--ghost:hover { color: var(--navy); }
+    .btn--full { width: 100%; text-align: center; font-size: 1.05rem; padding: 16px; }
+
+    /* ── Results ── */
+    .results { display: none; }
+    .results.active { display: block; }
+
+    .result__card {
+      border-radius: 16px;
+      padding: 40px 36px;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    .result__card--green { background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 2px solid #86efac; }
+    .result__card--amber { background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 2px solid #fcd34d; }
+    .result__card--red   { background: linear-gradient(135deg, #fff1f2, #ffe4e6); border: 2px solid #fca5a5; }
+
+    .result__icon { font-size: 3rem; margin-bottom: 16px; }
+    .result__label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .result__card--green .result__label { color: var(--green); }
+    .result__card--amber .result__label { color: var(--amber); }
+    .result__card--red   .result__label { color: var(--red); }
+
+    .result__headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 16px;
+    }
+    .result__body {
+      font-size: 1rem;
+      color: var(--text);
+      line-height: 1.7;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* ── Score breakdown ── */
+    .score-breakdown {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 32px;
+    }
+    .score-breakdown h3 {
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 16px;
+    }
+    .score-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .score-item:last-child { border-bottom: none; }
+    .score-item__topic { color: var(--muted); font-weight: 500; }
+    .score-item__badge {
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 100px;
+    }
+    .badge--green { background: #dcfce7; color: var(--green); }
+    .badge--amber { background: #fef3c7; color: var(--amber); }
+    .badge--red   { background: #ffe4e6; color: var(--red); }
+
+    /* ── Next steps ── */
+    .next-steps {
+      background: var(--navy);
+      color: var(--white);
+      border-radius: 16px;
+      padding: 36px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .next-steps h3 {
+      font-size: 1.3rem;
+      margin-bottom: 12px;
+      color: var(--white);
+    }
+    .next-steps p {
+      font-size: 0.97rem;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+    .next-steps .btn--primary { font-size: 1.05rem; padding: 16px 36px; }
+
+    .secondary-cta {
+      text-align: center;
+      padding: 24px;
+      background: var(--cream);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+    .secondary-cta p { font-size: 0.9rem; color: var(--muted); margin-bottom: 12px; }
+    .secondary-cta a {
+      color: var(--red);
+      font-weight: 700;
+      text-decoration: underline;
+      font-size: 0.95rem;
+    }
+
+    .retake {
+      text-align: center;
+      margin-top: 12px;
+    }
+    .retake button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-family: 'Inter', sans-serif;
+      text-decoration: underline;
+    }
+    .retake button:hover { color: var(--navy); }
+
+    @media (max-width: 520px) {
+      .result__card { padding: 28px 20px; }
+      .next-steps { padding: 24px 20px; }
+      .score-breakdown { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav__logo">Coming to <span>Spain</span></div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero__badge">🇪🇸 Free Spain Financial Assessment</div>
+    <h1>Is Spain <em>financially right</em> for you?</h1>
+    <p>6 questions. One result. Find out where you stand across tax, investments, pension, wealth tax, and currency — in under 5 minutes.</p>
+    <div class="hero__meta">
+      <span>📋 6 questions</span>
+      <span>⏱️ Under 5 minutes</span>
+      <span>🎯 Instant personalised result</span>
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <div class="quiz-wrapper">
+
+    <!-- Progress -->
+    <div class="progress" id="progress-bar">
+      <div class="progress__label">
+        <span id="progress-text">Question 1 of 6</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress__bar">
+        <div class="progress__fill" id="progress-fill" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <!-- Q1 -->
+    <div class="question active" id="q1">
+      <div class="question__tag">Tax Residency</div>
+      <div class="question__number">Question 1 of 6</div>
+      <div class="question__text">Based on your plans, how long do you expect to spend in Spain each year — and are you ready for the tax implications?</div>
+      <div class="options">
+        <button class="option" data-q="1" data-score="green" onclick="selectOption(this)">
+          <div class="option__dot"></div>
+          <div class="option__text">More than 183 days — and I understand I'd become a Spanish tax resident and I'm comfortable with that</div>
+        </button>
+        <button class="option" data-q="1" data-score="amber" onclick="selectOption(this)">
+          <div class="option__dot"></div>
+          <div class="option__text">I'm not sure yet — I haven't fully worked out the residency implications for my specific situation</div>
+        </button>
+        <button class="option" data-q="1" data-score="red" onclick="selectOption(this)">
+          <div class="option__dot"></div>
+          <div class="option__text">I want to spend significant time in Spain without triggering full tax residency — and I'm not sure if that's possible for me</div>
+        </button>
+      </div>
+      <div class="quiz__nav">
+        <span></span>
+        <button class="btn btn--primary" id="next-1" onclick="nextQuestion(1)" disabled>Next →</button>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question" id="q2">
+      <div class="question__tag">Spanish Taxes</div>
+      <div class="question__number">Question 2 of 6</div>
+      <div class="question__text">Looking at Spain's tax rates and your expected income, how does the financial picture look for you?</div>
+      <div class="options">
+        <button class="option" data-q="2" data-score="green" onclick="selectOption(this)">
+          <div class="option__dot"></div>
+          <div class="option__text">The numbers work for me — especially factoring in the separate, lower investment income scale</div>
+        </button>
+        <button class="option" data-q="2" data-score="amber" onclick="selectOption(this)">
+          <div class="option__dot"></div>
+          <div class="option__text">I need to model it properly for my income before I can say either way</div>
+        </button>
+        <button class="option" data-q="2" data-score="red" onclick="selectOption(this)">
+          <div class="option__dot"></div>
+          <div class="option__text">Spain's income tax rates look like a serious problem for my level of income</div>
+        </button>
+      </div>
+      <div class="quiz__nav">
+        <button class="btn btn--ghost" onclick="prevQuestion(2)">← Back</button>
+        <button class="btn btn--primary" id="next-2" onclick="nextQuestion(2)" disabled>Next →</button>
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question" id="q3">
+      <div class="question__tag">Investments</div>
+      <div class="question__number">Question 3 of 6</div>
+      <div class="question__text">Do you have investment accounts that would need restructuring before you move to Spain?</div>
+      <div class="options">
+        <button class="option" data-q="3" data-score="green" onclick="selectOption(this)">
+          <div class="option__dot"></div>
+          <div class="option__text">Yes — and I now understand what needs to change and have a plan to address it</div>
+        </button>
+        <button class="option" data-q="3" data-score="amber" onclick="selectOption(this)">
+          <div class="option__dot"></div>
+          <div class="option__text">Yes — and I need specialist help to figure out the right structure for my situation</div>
+        </button>
+        <button class="option" data-q="3" data-score="red" onclick="selectOption(this)">
+          <div class="option__dot"></div>
+          <div class="option__text">Yes — and this feels like a major blocker I hadn't fully considered before</div>
+        </button>
+      </div>
+      <div class="quiz__nav">
+        <button class="btn btn--ghost" onclick="prevQuestion(3)">← Back</button>
+        <button class="btn btn--primary" id="next-3" onclick="nextQuestion(3)" disabled>Next →</button>
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question" id="q4">
+      <div class="question__tag">Pension & Retirement</div>
+      <div class="question__number">Question 4 of 6</div>
+      <div class="question__text">Does Spain's treatment of your pension or retirement income still make the numbers work for your lifestyle?</div>
+      <div class="options">
+        <button class="option" data-q="4" data-score="green" onclick="selectOption(this)">
+          <div class="option__dot"></div>
+          <div class="option__text">Yes — the retirement income strategy still works under Spain's tax treatment</div>
+        </button>
+        <button class="option" data-q="4" data-score="amber" onclick="selectOption(this)">
+          <div class="option__dot"></div>
+          <div class="option__text">Possibly — but I need to model it properly for my specific pension and retirement accounts</div>
+        </button>
+        <button class="option" data-q="4" data-score="red" onclick="selectOption(this)">
+          <div class="option__dot"></div>
+          <div class="option__text">No — Spain's treatment of my pension significantly changes the retirement math for me</div>
+        </button>
+      </div>
+      <div class="quiz__nav">
+        <button class="btn btn--ghost" onclick="prevQuestion(4)">← Back</button>
+        <button class="btn btn--primary" id="next-4" onclick="nextQuestion(4)" disabled>Next →</button>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question" id="q5">
+      <div class="question__tag">Wealth Tax</div>
+      <div class="question__number">Question 5 of 6</div>
+      <div class="question__text">Based on your total assets, how does Spain's wealth tax picture look for you?</div>
+      <div class="options">
+        <button class="option" data-q="5" data-score="green" onclick="selectOption(this)">
+          <div class="option__dot"></div>
+          <div class="option__text">My assets are below the threshold — or I'd choose a low/zero wealth tax region like Madrid</div>
+        </button>
+        <button class="option" data-q="5" data-score="amber" onclick="selectOption(this)">
+          <div class="option__dot"></div>
+          <div class="option__text">I have significant assets and need to factor the wealth tax properly into my region decision</div>
+        </button>
+        <button class="option" data-q="5" data-score="red" onclick="selectOption(this)">
+          <div class="option__dot"></div>
+          <div class="option__text">The annual wealth tax bill would be a serious cost I hadn't factored into my plans</div>
+        </button>
+      </div>
+      <div class="quiz__nav">
+        <button class="btn btn--ghost" onclick="prevQuestion(5)">← Back</button>
+        <button class="btn btn--primary" id="next-5" onclick="nextQuestion(5)" disabled>Next →</button>
+      </div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="question" id="q6">
+      <div class="question__tag">Currency & Transfers</div>
+      <div class="question__number">Question 6 of 6</div>
+      <div class="question__text">If you're planning to transfer a large sum of money to Spain, do you have a currency strategy in place?</div>
+      <div class="options">
+        <button class="option" data-q="6" data-score="green" onclick="selectOption(this)">
+          <div class="option__dot"></div>
+          <div class="option__text">Yes — or I don't have large transfers to make so this isn't a significant factor for me</div>
+        </button>
+        <button class="option" data-q="6" data-score="amber" onclick="selectOption(this)">
+          <div class="option__dot"></div>
+          <div class="option__text">Not yet — I know I need to sort a currency strategy but haven't done it</div>
+        </button>
+        <button class="option" data-q="6" data-score="red" onclick="selectOption(this)">
+          <div class="option__dot"></div>
+          <div class="option__text">I hadn't considered this as a significant issue — this changes my thinking</div>
+        </button>
+      </div>
+      <div class="quiz__nav">
+        <button class="btn btn--ghost" onclick="prevQuestion(6)">← Back</button>
+        <button class="btn btn--primary" id="next-6" onclick="handleResults()" disabled>See My Results →</button>
+      </div>
+    </div>
+
+    <!-- Email Gate -->
+    <div class="question" id="email-gate">
+      <div class="question__tag">Almost there</div>
+      <div class="question__text">Where should we send your personalised results?</div>
+      <p style="color:var(--muted);font-size:0.95rem;margin-bottom:28px;line-height:1.6;">Your assessment is ready. Enter your email to see your full financial picture — and we'll send you a copy to keep.</p>
+      <form onsubmit="submitEmail(event)">
+        <input type="email" id="lead-email" placeholder="Your best email address" required
+          style="width:100%;padding:16px 20px;border:2px solid var(--border);border-radius:8px;font-size:1rem;font-family:'Inter',sans-serif;margin-bottom:12px;outline:none;transition:border-color 0.2s;"
+          onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='var(--border)'" />
+        <button type="submit" class="btn btn--primary btn--full">Show My Results →</button>
+      </form>
+      <p style="font-size:0.8rem;color:var(--muted);margin-top:12px;text-align:center;">No spam. Unsubscribe anytime.</p>
+    </div>
+
+    <!-- Results -->
+    <div class="results" id="results">
+
+      <!-- Result: Green -->
+      <div id="result-green" style="display:none;">
+        <div class="result__card result__card--green">
+          <div class="result__icon">✅</div>
+          <div class="result__label">Your result</div>
+          <h2 class="result__headline">Spain looks financially viable for you.</h2>
+          <p class="result__body">Based on your answers, the financial picture of moving to Spain works for your situation. You understand the residency rules, your income and retirement strategy holds up under Spanish tax, and you've identified what needs to be put in place before you go.<br><br>You're not in the research phase anymore. You're in the <em>let's make this happen</em> phase.</p>
+        </div>
+
+        <div class="score-breakdown" id="breakdown-green"></div>
+
+        <div class="next-steps">
+          <h3>Your next step</h3>
+          <p><a href="https://www.comingtospain.com/waiting-list"><strong>The Spain Money Map</strong></a></p>
+          <p>This is for you if you're ready to move and want to go from financially clear to fully sorted — without spending months piecing it together yourself.</p>
+          <p>It includes a pre-move financial checklist, a Spain tax region comparison tool, a custodian decision guide (which platforms close expat accounts and what to do), a currency planning calculator, an 18-month financial timeline, and a vetted directory of cross-border tax, wealth, and currency specialists.</p>
+          <p>I'm finishing it now. Join the waitlist for early access.</p>
+          <a href="https://www.comingtospain.com/waiting-list" class="btn btn--primary">Join the Waitlist for Early Access →</a>
+        </div>
+      </div>
+
+      <!-- Result: Amber -->
+      <div id="result-amber" style="display:none;">
+        <div class="result__card result__card--amber">
+          <div class="result__icon">🤔</div>
+          <div class="result__label">Your result</div>
+          <h2 class="result__headline">Spain is possible — but you have gaps to close first.</h2>
+          <p class="result__body">Based on your answers, Spain isn't a no — but it isn't a clear yes either. You've got some pieces in place, but there are gaps in your financial picture that need answering before you can make a confident decision.<br><br>You now know <em>what</em> you don't know. That's the hardest part. The people who move forward from here get specialist input on the specific questions that are blocking them.</p>
+        </div>
+
+        <div class="score-breakdown" id="breakdown-amber"></div>
+
+        <div class="next-steps">
+          <h3>Get a free specialist introduction</h3>
+          <p>The gaps you've identified are exactly what a cross-border specialist can help you close. I've spent eight years building relationships with the tax advisors, wealth managers, and currency experts who work specifically with Americans and Brits in your situation. I know who to connect you with — and it costs you nothing.</p>
+          <a href="https://www.comingtospain.com/get-in-touch" class="btn btn--primary">Get a Free Specialist Intro →</a>
+        </div>
+        <div class="secondary-cta">
+          <p>Want to go deeper on your own first?</p>
+          <p><a href="https://www.comingtospain.com/7-day-free-course"><strong>The free 7-day Spain financial course →</strong></a></p>
+          <p>This is for you if you want to understand each gap in full before talking to anyone — one topic per day covering tax residency, Spanish taxes, investments, pensions, wealth tax, and currency. Free, under 10 minutes per email, no obligation.</p>
+        </div>
+      </div>
+
+      <!-- Result: Red -->
+      <div id="result-red" style="display:none;">
+        <div class="result__card result__card--red">
+          <div class="result__icon">❌</div>
+          <div class="result__label">Your result</div>
+          <h2 class="result__headline">Spain has financial blockers to address first.</h2>
+          <p class="result__body">Based on your answers, there are real financial challenges in your picture that need to be resolved before Spain becomes viable. But here's the truth: most of these obstacles are solvable. They just need the right specialist and the right timing.<br><br>The fact that you know about them now — before any irreversible decisions — puts you in a far better position than most people who discover them after they've moved. This isn't a no. It's a <em>not yet</em> — with a clear path forward.</p>
+        </div>
+
+        <div class="score-breakdown" id="breakdown-red"></div>
+
+        <div class="next-steps">
+          <h3>Get a free specialist introduction</h3>
+          <p>The obstacles in your picture — whether it's investment restructuring, pension treatment, or wealth tax exposure — each have solutions. But they need specialist input, not more research. I can connect you with the right cross-border advisor for your specific blockers. One conversation often resolves what months of research couldn't.</p>
+          <a href="https://www.comingtospain.com/get-in-touch" class="btn btn--primary">Get a Free Specialist Intro →</a>
+        </div>
+        <div class="secondary-cta">
+          <p>Want to understand the full picture before your first conversation?</p>
+          <p><a href="https://www.comingtospain.com/7-day-free-course"><strong>The free 7-day Spain financial course →</strong></a></p>
+          <p>This is for you if you want to understand your blockers in full before your first specialist conversation — so you go in knowing what you're dealing with, not learning it on the call. One topic per day, free, no obligation.</p>
+        </div>
+      </div>
+
+      <div class="retake">
+        <button onclick="retakeQuiz()">↺ Retake the assessment</button>
+      </div>
+
+    </div><!-- /results -->
+
+  </div><!-- /quiz-wrapper -->
+
+  <script>
+    const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzklMbSP4PJ1g8jHxt8rPvesEdnURpUEE8w2vVK-qsK5Czvd2pjB3Gyj6SOS_csA1cf/exec';
+    const isSubscriber = new URLSearchParams(window.location.search).get('subscriber') === 'true';
+
+    const answers = {};
+    const answerTexts = {};
+    const topics = {
+      1: 'Tax Residency',
+      2: 'Spanish Taxes',
+      3: 'Investments',
+      4: 'Pension & Retirement',
+      5: 'Wealth Tax',
+      6: 'Currency & Transfers'
+    };
+    const topicKeys = {
+      1: 'tax_residency',
+      2: 'spanish_taxes',
+      3: 'investments',
+      4: 'pension',
+      5: 'wealth_tax',
+      6: 'currency'
+    };
+    const labels = {
+      green: { text: 'Looking good', cls: 'badge--green' },
+      amber: { text: 'Needs clarity', cls: 'badge--amber' },
+      red:   { text: 'Blocker found', cls: 'badge--red' }
+    };
+
+    function calcOutcome() {
+      const counts = { green: 0, amber: 0, red: 0 };
+      Object.values(answers).forEach(v => counts[v]++);
+      if (counts.red >= 2) return 'red';
+      if (counts.red === 1 || counts.amber >= 3) return 'amber';
+      return 'green';
+    }
+
+    function selectOption(el) {
+      const q = el.dataset.q;
+      document.querySelectorAll(`.option[data-q="${q}"]`).forEach(o => {
+        o.classList.remove('selected', 'green', 'amber', 'red');
+      });
+      const score = el.dataset.score;
+      el.classList.add('selected', score);
+      answers[q] = score;
+      answerTexts[q] = el.querySelector('.option__text').textContent.trim();
+      const nextBtn = document.getElementById(`next-${q}`);
+      if (nextBtn) nextBtn.disabled = false;
+    }
+
+    function nextQuestion(current) {
+      if (!answers[current]) return;
+      document.getElementById(`q${current}`).classList.remove('active');
+      document.getElementById(`q${current + 1}`).classList.add('active');
+      updateProgress(current + 1);
+    }
+
+    function prevQuestion(current) {
+      document.getElementById(`q${current}`).classList.remove('active');
+      document.getElementById(`q${current - 1}`).classList.add('active');
+      updateProgress(current - 1);
+    }
+
+    function updateProgress(q) {
+      const pct = Math.round(((q - 1) / 6) * 100);
+      document.getElementById('progress-fill').style.width = pct + '%';
+      document.getElementById('progress-text').textContent = `Question ${q} of 6`;
+      document.getElementById('progress-pct').textContent = pct + '%';
+    }
+
+    // Called when "See My Results" is clicked on Q6
+    function handleResults() {
+      if (!answers[6]) return;
+      document.getElementById('q6').classList.remove('active');
+      document.getElementById('progress-bar').style.display = 'none';
+
+      if (isSubscriber) {
+        // Skip email gate — show results directly
+        showResults('');
+      } else {
+        // Show email gate
+        document.getElementById('email-gate').classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    // Called when email form is submitted
+    function submitEmail(e) {
+      e.preventDefault();
+      const email = document.getElementById('lead-email').value.trim();
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.textContent = 'Loading your results...';
+      btn.disabled = true;
+
+      // Send to Google Sheets
+      const outcome = calcOutcome();
+      const payload = { email, result: outcome };
+      for (let i = 1; i <= 6; i++) {
+        payload[topicKeys[i]] = answerTexts[i] || '';
+      }
+
+      fetch(SHEETS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(payload)
+      }).finally(() => {
+        // Show results regardless of fetch outcome
+        document.getElementById('email-gate').classList.remove('active');
+        showResults(email);
+      });
+    }
+
+    function showResults(email) {
+      const outcome = calcOutcome();
+
+      const results = document.getElementById('results');
+      results.classList.add('active');
+      document.getElementById(`result-${outcome}`).style.display = 'block';
+
+      const breakdown = buildBreakdown();
+      document.getElementById(`breakdown-${outcome}`).innerHTML = breakdown;
+
+      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function buildBreakdown() {
+      let html = '<h3>Your assessment breakdown</h3>';
+      for (let i = 1; i <= 6; i++) {
+        const score = answers[i] || 'amber';
+        const l = labels[score];
+        html += `
+          <div class="score-item">
+            <span class="score-item__topic">${topics[i]}</span>
+            <span class="score-item__badge ${l.cls}">${l.text}</span>
+          </div>`;
+      }
+      return html;
+    }
+
+    function retakeQuiz() {
+      Object.keys(answers).forEach(k => delete answers[k]);
+      document.querySelectorAll('.option').forEach(o => o.classList.remove('selected','green','amber','red'));
+      document.querySelectorAll('.btn--primary[id^="next-"]').forEach(b => b.disabled = true);
+      document.getElementById('next-6').disabled = true;
+      document.getElementById('results').classList.remove('active');
+      document.getElementById('result-green').style.display = 'none';
+      document.getElementById('result-amber').style.display = 'none';
+      document.getElementById('result-red').style.display  = 'none';
+      document.getElementById('email-gate').classList.remove('active');
+      document.getElementById('progress-bar').style.display = 'block';
+      document.getElementById('q1').classList.add('active');
+      updateProgress(1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+
+</body>
+</html>
