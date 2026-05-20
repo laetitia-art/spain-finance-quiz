@@ -580,8 +580,11 @@
 
         <div class="next-steps">
           <h3>Your next step</h3>
-          <p>The gap between "Spain looks viable" and "I'm fully set up" is where people lose time, money, and momentum. The Spain Money Map closes that gap — a step-by-step toolkit that takes you from financially ready in theory to financially sorted in practice.</p>
-          <a href="#" class="btn btn--primary">Get The Spain Money Map — £67 →</a>
+          <p><a href="https://www.comingtospain.com/waiting-list"><strong>The Spain Money Map</strong></a></p>
+          <p>This is for you if you're ready to move and want to go from financially clear to fully sorted — without spending months piecing it together yourself.</p>
+          <p>It includes a pre-move financial checklist, a Spain tax region comparison tool, a custodian decision guide (which platforms close expat accounts and what to do), a currency planning calculator, an 18-month financial timeline, and a vetted directory of cross-border tax, wealth, and currency specialists.</p>
+          <p>I'm finishing it now. Join the waitlist for early access.</p>
+          <a href="https://www.comingtospain.com/waiting-list" class="btn btn--primary">Join the Waitlist for Early Access →</a>
         </div>
       </div>
 
@@ -599,11 +602,12 @@
         <div class="next-steps">
           <h3>Get a free specialist introduction</h3>
           <p>The gaps you've identified are exactly what a cross-border specialist can help you close. I've spent eight years building relationships with the tax advisors, wealth managers, and currency experts who work specifically with Americans and Brits in your situation. I know who to connect you with — and it costs you nothing.</p>
-          <a href="#" class="btn btn--primary">Get a Free Specialist Intro →</a>
+          <a href="https://www.comingtospain.com/get-in-touch" class="btn btn--primary">Get a Free Specialist Intro →</a>
         </div>
         <div class="secondary-cta">
           <p>Want to go deeper on your own first?</p>
-          <a href="#">The Spain Money Map covers every financial dimension of the move in detail — £67 →</a>
+          <p><a href="https://www.comingtospain.com/7-day-free-course"><strong>The free 7-day Spain financial course →</strong></a></p>
+          <p>This is for you if you want to understand each gap in full before talking to anyone — one topic per day covering tax residency, Spanish taxes, investments, pensions, wealth tax, and currency. Free, under 10 minutes per email, no obligation.</p>
         </div>
       </div>
 
@@ -621,11 +625,12 @@
         <div class="next-steps">
           <h3>Get a free specialist introduction</h3>
           <p>The obstacles in your picture — whether it's investment restructuring, pension treatment, or wealth tax exposure — each have solutions. But they need specialist input, not more research. I can connect you with the right cross-border advisor for your specific blockers. One conversation often resolves what months of research couldn't.</p>
-          <a href="#" class="btn btn--primary">Get a Free Specialist Intro →</a>
+          <a href="https://www.comingtospain.com/get-in-touch" class="btn btn--primary">Get a Free Specialist Intro →</a>
         </div>
         <div class="secondary-cta">
           <p>Want to understand the full picture before your first conversation?</p>
-          <a href="#">The Spain Money Map is a good place to start — £67 →</a>
+          <p><a href="https://www.comingtospain.com/7-day-free-course"><strong>The free 7-day Spain financial course →</strong></a></p>
+          <p>This is for you if you want to understand your blockers in full before your first specialist conversation — so you go in knowing what you're dealing with, not learning it on the call. One topic per day, free, no obligation.</p>
         </div>
       </div>
 
@@ -642,6 +647,7 @@
     const isSubscriber = new URLSearchParams(window.location.search).get('subscriber') === 'true';
 
     const answers = {};
+    const answerTexts = {};
     const topics = {
       1: 'Tax Residency',
       2: 'Spanish Taxes',
@@ -680,6 +686,7 @@
       const score = el.dataset.score;
       el.classList.add('selected', score);
       answers[q] = score;
+      answerTexts[q] = el.querySelector('.option__text').textContent.trim();
       const nextBtn = document.getElementById(`next-${q}`);
       if (nextBtn) nextBtn.disabled = false;
     }
@@ -732,7 +739,7 @@
       const outcome = calcOutcome();
       const payload = { email, result: outcome };
       for (let i = 1; i <= 6; i++) {
-        payload[topicKeys[i]] = answers[i] || '';
+        payload[topicKeys[i]] = answerTexts[i] || '';
       }
 
       fetch(SHEETS_URL, {
